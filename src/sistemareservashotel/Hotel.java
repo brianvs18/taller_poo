@@ -4,15 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Hotel {
+public class Hotel extends ValueObject {
     private String nombre;
     private List<Habitacion> habitaciones;
 
-    public Hotel(String nombre, int cantidadHabitaciones) {
+    public Hotel(int id, String nombre, int cantidadHabitaciones) {
+        super(id);
         this.nombre = nombre;
         this.habitaciones = new ArrayList<>();
         for (int i = 1; i <= cantidadHabitaciones; i++) {
-            habitaciones.add(new Habitacion(i));
+            habitaciones.add(new Habitacion(i, i));
         }
     }
 
@@ -24,5 +25,14 @@ public class Hotel {
         return habitaciones.stream()
                 .filter(Habitacion::isDisponible)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public String toString() {
+        return "Hotel{" +
+                "id=" + id +
+                ", nombre='" + nombre + '\'' +
+                ", habitaciones=" + habitaciones +
+                '}';
     }
 }

@@ -1,10 +1,11 @@
 package sistemareservashotel;
 
-public class Habitacion {
+public class Habitacion extends ValueObject {
     private int numero;
     private boolean disponible;
 
-    public Habitacion(int numero) {
+    public Habitacion(int id, int numero) {
+        super(id);
         this.numero = numero;
         this.disponible = true;
     }
@@ -21,7 +22,16 @@ public class Habitacion {
         disponible = false;
     }
 
-    public void cancelarReserva() {
+    public void cancelarHabitacion() {
         disponible = true;
+    }
+
+    @Override
+    public String toString() {
+        return "Habitacion{" +
+                "id=" + id +
+                ", numero=" + numero +
+                ", disponible=" + disponible +
+                '}';
     }
 }
