@@ -18,8 +18,19 @@ public class SistemaReservaHotel {
         clientes.add(new Cliente(2, "Maria Agudelo", "2334455", "Amazon"));
 
         datosReserva(1, 2, 2);
-        datosReserva(2, 1, 1);
+        datosReserva(1, 1, 1);
+        // El estado de la reserva es Reservado
         mostrarReservas();
+        // Muestra error al intentar reservar una habitacion que no existe o se encuentra ocupada
+        datosReserva(1, 2, 5);
+        // Se imprime los hoteles para mostrar que las habitaciones estan en disponible = false
+        System.out.println(hoteles);
+        System.out.println("########################################################");
+        cancelarReserva(1);
+        // El estado de la reserva pasa a ser Cancelado
+        mostrarReservas();
+        // Al cancelar la reserva, la habitacion de la reserva con el id enviado se mostrara en disponible = true
+        System.out.println(hoteles);
     }
 
     private static void datosReserva(int hotelId, int clienteId, int numeroHabitacion) {
@@ -31,21 +42,29 @@ public class SistemaReservaHotel {
     }
 
     private static void realizarReserva(Hotel hotel, Cliente cliente, int numeroHabitacion) {
-        hotel.getHabitacionesDisponibles().stream()
-                .filter(habitacion -> habitacion.getNumero() == numeroHabitacion && habitacion.isDisponible())
-                .forEach(habitacion -> {
-                    habitacion.reservarHabitacion();
-                    Reserva reserva = new Reserva(cont.get(), cliente, hotel, habitacion);
-                    reserva.realizarReserva();
-                    reservas.add(reserva);
-                    cont.getAndIncrement();
-                });
+
+        boolean existe = hotel.getHabitacionesDisponibles().stream()
+                .anyMatch(habitacion -> habitacion.getNumero() == numeroHabitacion && habitacion.isDisponible());
+
+        if (existe) {
+            hotel.getHabitacionesDisponibles().stream()
+                    .filter(habitacion -> habitacion.getNumero() == numeroHabitacion)
+                    .forEach(habitacion -> {
+                        habitacion.reservarHabitacion();
+                        Reserva reserva = new Reserva(cont.get(), cliente, hotel, habitacion);
+                        reserva.realizarReserva();
+                        reservas.add(reserva);
+                        cont.getAndIncrement();
+                    });
+        } else System.out.println("La habitacion no existe o no está disponible para reservar");
     }
 
     private static void cancelarReserva(int reservaId) {
         reservas.stream()
                 .filter(reserva -> reserva.id == reservaId)
-                .forEach(Reserva::cancelarReserva);
+                .forEach(reserva -> hoteles.forEach(hotel -> hotel.getHabitacionesReservadas().stream()
+                        .filter(habitacion -> habitacion.getNumero() == reserva.getHabitacion().getNumero())
+                        .forEach(habitacion -> reserva.cancelarReserva())));
     }
 
     private static void mostrarReservas() {
@@ -54,7 +73,7 @@ public class SistemaReservaHotel {
             System.out.println("************************");
             System.out.println("Reserva id: " + reserva.id + "\nHotel: " + reserva.getHotel().getNombre() + "\nCliente: " + reserva.getCliente().getNombre()
                     + "\nDocumento: " + reserva.getCliente().getDocumento() + "\nEmpresa: " + reserva.getCliente().getEmpresa()
-                    + "\nHabitacion: " + reserva.getHabitacion().getNumero());
+                    + "\nHabitacion: " + reserva.getHabitacion().getNumero() + "\nEstado reserva: " + reserva.getEstado());
         });
     }
 }

@@ -21,9 +21,16 @@ public class Hotel extends ValueObject {
         return nombre;
     }
 
+
     public List<Habitacion> getHabitacionesDisponibles() {
         return habitaciones.stream()
                 .filter(Habitacion::isDisponible)
+                .collect(Collectors.toList());
+    }
+
+    public List<Habitacion> getHabitacionesReservadas() {
+        return habitaciones.stream()
+                .filter(habitacion -> !habitacion.isDisponible())
                 .collect(Collectors.toList());
     }
 
