@@ -12,6 +12,18 @@ public class Reserva extends ValueObject {
         this.habitacion = habitacion;
     }
 
+    public Cliente getCliente() {
+        return cliente;
+    }
+
+    public Hotel getHotel() {
+        return hotel;
+    }
+
+    public Habitacion getHabitacion() {
+        return habitacion;
+    }
+
     public void realizarReserva() {
         habitacion.reservarHabitacion();
     }
